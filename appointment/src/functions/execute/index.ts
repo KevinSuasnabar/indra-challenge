@@ -6,7 +6,13 @@ export default {
     {
       http: {
         method: "post",
-        path: "execute",
+        path: "appointment",
+      },
+    },
+    {
+      http: {
+        method: "get",
+        path: "appointment/{insuredId}",
       },
     },
     {

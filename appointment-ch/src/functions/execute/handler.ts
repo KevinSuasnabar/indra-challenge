@@ -5,12 +5,15 @@ import {
   PutEventsCommand,
   PutEventsCommandInput,
 } from "@aws-sdk/client-eventbridge";
+import { PostgresService } from "src/services";
 
 const eventBridge = new EventBridgeClient({});
 
 export const execute = async (
   event: APIGatewayProxyEvent | SQSEvent
 ): Promise<APIGatewayProxyResult | void> => {
+  const postgresService = new PostgresService();
+
   try {
     if ("Records" in event) {
       console.log("SQS Event:", JSON.stringify(event, null, 2));
@@ -18,6 +21,17 @@ export const execute = async (
       for (const record of event.Records) {
         const messageBody = JSON.parse(record.body);
         console.log("Message Body:", JSON.stringify(messageBody, null, 2));
+
+        const appointmentData = JSON.parse(messageBody.Message);
+        console.log(
+          "Appointment Data:",
+          JSON.stringify(appointmentData, null, 2)
+        );
+
+        await postgresService.insert({
+          insuredId: appointmentData.insuredId,
+          scheduleId: appointmentData.scheduleId,
+        });
 
         const params: PutEventsCommandInput = {
           Entries: [
@@ -34,6 +48,7 @@ export const execute = async (
         const result = await eventBridge.send(command);
         console.log("EventBridge Result:", JSON.stringify(result, null, 2));
       }
+
       return;
     }
 
@@ -47,6 +62,8 @@ export const execute = async (
   } catch (error) {
     console.error("Error processing event:", error);
     throw error;
+  } finally {
+    await postgresService.close();
   }
 };
 

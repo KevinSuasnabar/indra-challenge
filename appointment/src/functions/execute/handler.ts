@@ -3,7 +3,8 @@ import {
   APIGatewayProxyResult,
   SQSEvent,
 } from "aws-lambda";
-import { execute as httpHandler } from "./http-handler";
+import { execute as postAppointmentHandler } from "./post-appointment.handler";
+import { execute as getAppointmentHandler } from "./get-appointment.handler";
 import { execute as sqsHandler } from "./sqs-handler";
 
 interface EventHandlerStrategy {
@@ -27,7 +28,20 @@ class HTTPEventStrategy implements EventHandlerStrategy {
   }
 
   async handle(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-    return httpHandler(event);
+    if (event.httpMethod === "GET" && event.pathParameters?.insuredId) {
+      return getAppointmentHandler(event);
+    }
+
+    if (event.httpMethod === "POST") {
+      return postAppointmentHandler(event);
+    }
+
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: "Method not allowed",
+      }),
+    };
   }
 }
 

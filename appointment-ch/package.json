@@ -12,7 +12,9 @@
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.804.0",
     "@middy/core": "^3.4.0",
-    "@middy/http-json-body-parser": "^3.4.0"
+    "@middy/http-json-body-parser": "^3.4.0",
+    "@types/pg": "^8.15.0",
+    "pg": "^8.15.6"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.0.0",
