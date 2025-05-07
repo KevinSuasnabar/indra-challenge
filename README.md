@@ -8,18 +8,18 @@ Esta API proporciona endpoints para gestionar citas. A continuación se detallan
 
 ## Estructura del Proyecto
 
-El proyecto está organizado en varios microservicios:
+El proyecto está organizado en varias lambdas:
 
-- `appointment/`: Servicio principal de citas
+- `appointment/`: Lambda principal de citas
   - Maneja la creación y consulta de citas
   - Implementa la lógica de negocio principal
   - Utiliza AWS Lambda y DynamoDB
 
-- `appointment-pe/`: Servicio específico para Perú
+- `appointment-pe/`: Lambda específica para Perú
   - Adaptaciones y reglas de negocio específicas para Perú
   - Integración con servicios locales
 
-- `appointment-ch/`: Servicio específico para Chile
+- `appointment-ch/`: Lambda específica para Chile
   - Adaptaciones y reglas de negocio específicas para Chile
   - Integración con servicios locales
 
