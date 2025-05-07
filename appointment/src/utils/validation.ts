@@ -8,8 +8,8 @@ export const validateExecuteRequest = (body: string): ExecuteRequest => {
       throw new Error('insuredId is required and must be a string');
     }
     
-    if (!request.scheduleId || typeof request.scheduleId !== 'string') {
-      throw new Error('scheduleId is required and must be a string');
+    if (!request.scheduleId || typeof request.scheduleId !== 'number') {
+      throw new Error('scheduleId is required and must be a number');
     }
     
     if (!request.countryISO || typeof request.countryISO !== 'string') {

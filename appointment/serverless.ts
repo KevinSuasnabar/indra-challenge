@@ -29,6 +29,11 @@ const serverlessConfiguration: AWS = {
             Action: ["sns:Publish"],
             Resource: "arn:aws:sns:*:*:*",
           },
+          {
+            Effect: "Allow",
+            Action: ["dynamodb:*"],
+            Resource: "*",
+          },
         ],
       },
     },

@@ -1,4 +1,9 @@
 import { SQSEvent } from "aws-lambda";
+import { DynamoDBService } from "../../services";
+import { ExecuteRequest } from "../../types/execute.types";
+import { Status } from "../../utils";
+
+const dynamoService = new DynamoDBService("Appointment");
 
 class SQSProcessingError extends Error {
   constructor(message: string, public readonly record?: any) {
@@ -21,7 +26,28 @@ export const execute = async (event: SQSEvent): Promise<void> => {
           throw new SQSProcessingError("Empty message body", record);
         }
 
-        console.log("Message from SQS:", record.body);
+        const snsEvent = JSON.parse(record.body);
+        if (!snsEvent.detail?.Message) {
+          throw new SQSProcessingError("No Message found in SNS event", record);
+        }
+
+        const message = JSON.parse(snsEvent.detail.Message) as ExecuteRequest;
+        console.log("Processing message:", message);
+
+        if (!message.appointmentId) {
+          throw new SQSProcessingError(
+            "appointmentId is required in message",
+            record
+          );
+        }
+
+        const updatedAppointment = await dynamoService.update(
+          message.appointmentId,
+          {
+            status: Status.COMPLETED,
+          }
+        );
+        console.log("Updated appointment in DynamoDB:", updatedAppointment);
       } catch (recordError) {
         console.error(
           `Error processing record ${record.messageId}:`,
