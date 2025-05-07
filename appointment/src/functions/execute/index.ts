@@ -7,12 +7,14 @@ export default {
       http: {
         method: "post",
         path: "appointment",
+        cors: true
       },
     },
     {
       http: {
         method: "get",
         path: "appointment/{insuredId}",
+        cors: true
       },
     },
     {

@@ -28,11 +28,13 @@ class HTTPEventStrategy implements EventHandlerStrategy {
   }
 
   async handle(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+    const path = event.path.replace(/^\/+/, ""); // Remove leading slashes
+
     if (event.httpMethod === "GET" && event.pathParameters?.insuredId) {
       return getAppointmentHandler(event);
     }
 
-    if (event.httpMethod === "POST") {
+    if (event.httpMethod === "POST" && path === "appointment") {
       return postAppointmentHandler(event);
     }
 

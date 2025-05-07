@@ -1,0 +1,213 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Appointment API",
+    "version": "1.0.0",
+    "description": "API para gestionar citas médicas"
+  },
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/appointment": {
+      "post": {
+        "summary": "Crear una nueva cita",
+        "description": "Crea una nueva cita médica y la envía a procesar",
+        "tags": ["Appointments"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Datos de la cita a crear",
+            "schema": {
+              "$ref": "#/definitions/CreateAppointmentRequest"
+            },
+            "examples": {
+              "application/json": {
+                "insuredId": "00019",
+                "scheduleId": 18,
+                "countryISO": "CH"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cita creada exitosamente",
+            "schema": {
+              "$ref": "#/definitions/CreateAppointmentResponse"
+            }
+          },
+          "400": {
+            "description": "Datos de entrada inválidos",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/appointment/{insuredId}": {
+      "get": {
+        "summary": "Obtener citas por ID del asegurado",
+        "description": "Retorna todas las citas asociadas a un asegurado específico",
+        "tags": ["Appointments"],
+        "parameters": [
+          {
+            "name": "insuredId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del asegurado para filtrar las citas",
+            "example": "00019"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de citas encontradas para el asegurado",
+            "schema": {
+              "$ref": "#/definitions/GetAppointmentsResponse"
+            }
+          },
+          "400": {
+            "description": "ID del asegurado no proporcionado o inválido",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "No se encontraron citas para el asegurado",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateAppointmentRequest": {
+      "type": "object",
+      "required": ["insuredId", "scheduleId", "countryISO"],
+      "properties": {
+        "insuredId": {
+          "type": "string",
+          "description": "ID del asegurado",
+          "example": "00019"
+        },
+        "scheduleId": {
+          "type": "number",
+          "description": "Identificador único del espacio de cita médica",
+          "example": 18
+        },
+        "countryISO": {
+          "type": "string",
+          "description": "Código ISO del país",
+          "example": "CH",
+          "enum": ["PE", "CH"]
+        }
+      },
+      "example": {
+        "insuredId": "00019",
+        "scheduleId": 18,
+        "countryISO": "CH"
+      }
+    },
+    "CreateAppointmentResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Request processed successfully"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "insuredId": {
+              "type": "string",
+              "example": "00019"
+            },
+            "scheduleId": {
+              "type": "number",
+              "example": 18
+            },
+            "countryISO": {
+              "type": "string",
+              "example": "CH"
+            }
+          }
+        },
+        "appointmentId": {
+          "type": "string",
+          "example": "37719c9a-7c13-4d37-b4d8-c6b35cd9a381"
+        }
+      }
+    },
+    "GetAppointmentsResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Appointments retrieved successfully"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Appointment"
+          }
+        }
+      }
+    },
+    "Appointment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "d343a7cb-4513-415f-9cb5-6e7335861232"
+        },
+        "insuredId": {
+          "type": "string",
+          "example": "00019"
+        },
+        "scheduleId": {
+          "type": "number",
+          "example": 18
+        },
+        "countryISO": {
+          "type": "string",
+          "example": "CH"
+        },
+        "status": {
+          "type": "string",
+          "example": "COMPLETED",
+          "enum": ["PENDING", "COMPLETED", "CANCELLED"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2025-05-07T06:54:07.244Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2025-05-07T06:54:07.598Z"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Error message"
+        },
+        "error": {
+          "type": "string",
+          "example": "Detailed error information"
+        }
+      }
+    }
+  }
+}
