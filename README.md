@@ -86,6 +86,9 @@ Recupera todas las citas para un ID de asegurado específico.
 ## Notas
 - Todos los endpoints soportan CORS
 - La API utiliza AWS Lambda y DynamoDB para el almacenamiento de datos
+- Se utiliza Amazon RDS (PostgreSQL) para el almacenamiento regional de citas
+- Se utiliza Amazon SQS para la gestión de colas y procesamiento asíncrono
+- Se utiliza Amazon EventBridge para la integración y el enrutamiento de eventos
 - Las citas se procesan de forma asíncrona utilizando SNS para notificaciones
 
 ## Pruebas de la API
